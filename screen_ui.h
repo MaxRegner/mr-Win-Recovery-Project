@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 The Android Open Source Project
+ * Copyright (C) 2011 The Android Open Source Project and mr recovery project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,17 +31,130 @@ struct GRSurface;
 // Implementation of RecoveryUI appropriate for devices with a screen
 // (shows an icon + a progress bar, text logging, menu, etc.)
 class ScreenRecoveryUI : public RecoveryUI {
- public:
-  enum UIElement {
-    HEADER,
-    MENU,
-    MENU_SEL_BG,
-    MENU_SEL_BG_ACTIVE,
-    MENU_SEL_FG,
-    LOG,
-    TEXT_FILL,
-    INFO
-  };
+
+public:
+    ScreenRecoveryUI();
+    virtual ~ScreenRecoveryUI();
+
+    // Sets the locale to use for text display.
+    virtual void SetLocale(const char* locale);
+
+    // Sets the background image to use.
+    virtual void SetBackground(Icon icon);
+
+    // Sets the stage of the installation (e.g. "Installing system...")
+    virtual void SetStage(int current, int max);
+    virtual void SetStageMultiline(int current, int max, const char* const* lines);
+
+    // Sets the progress bar to show the given fraction of the current stage.
+    virtual void ShowProgress(float portion, float seconds);
+
+    // Sets the text to show while the progress bar is animating.
+    virtual void SetProgressType(ProgressType type);
+
+    // Sets whether the device is simulating the actions of the install.
+    virtual void SetSimulation(bool simulation);
+
+    // Sets whether the device is currently installing the update.
+    virtual void SetInstalling(bool installing);
+
+    // Sets whether the device is currently erasing the user data.
+    virtual void SetErase(bool erase);
+
+    // Sets whether the device is currently wiping the cache partition.
+    virtual void SetWipeCache(bool wipe_cache);
+
+    // Sets whether the device is currently wiping the dalvik cache.
+    virtual void SetWipeDalvikCache(bool wipe_dalvik_cache);
+
+    // Sets whether the device is currently wiping the battery stats.
+    virtual void SetWipeBatteryStats(bool wipe_battery_stats);
+
+    // Sets whether the device is currently wiping the data partition.
+    virtual void SetWipeData(bool wipe_data);
+
+    // Sets whether the device is currently wiping the sd-ext partition.
+    virtual void SetWipeSdext(bool wipe_sdext);
+
+    // Sets whether the device is currently formatting the system partition.
+    virtual void SetFormatSystem(bool format_system);
+
+    // Sets whether the device is currently formatting the data partition.
+    virtual void SetFormatData(bool format_data);
+
+    // Sets whether the device is currently formatting the cache partition.
+    virtual void SetFormatCache(bool format_cache);
+
+    // Sets whether the device is currently formatting the sd-ext partition.
+    virtual void SetFormatSdext(bool format_sdext);
+
+    // Sets whether the device is currently formatting the dalvik cache.
+    virtual void SetFormatDalvikCache(bool format_dalvik_cache);
+
+    // Sets whether the device is currently formatting the battery stats.
+    virtual void SetFormatBatteryStats(bool
+format_battery_stats);
+
+    // Sets whether the device is currently formatting the sd-ext partition.
+    virtual void SetFormatSdext(bool format_sdext);
+
+    // Sets whether the device is currently formatting the dalvik cache.
+    virtual void SetFormatDalvikCache(bool format_dalvik_cache);
+
+    // Sets whether the device is currently formatting the battery stats.
+    virtual void SetFormatBatteryStats(bool format_battery_stats);
+
+    // Sets whether the device is currently formatting the sd-ext partition.
+    virtual void SetFormatSdext(bool format_sdext);
+
+    // Sets whether the device is currently formatting the dalvik cache.
+    virtual void SetFormatDalvikCache(bool format_dalvik_cache);
+
+    // Sets whether the device is currently formatting the battery stats.
+    virtual void SetFormatBatteryStats(bool format_battery_stats);
+
+    // Sets whether the device is currently formatting the sd-ext partition.
+    virtual void SetFormatSdext(bool format_sdext);
+
+    // Sets whether the device is currently formatting the dalvik cache.
+    virtual void SetFormatDalvikCache(bool format_dalvik_cache);
+
+    // Sets whether the device is currently formatting the battery stats.
+    virtual void SetFormatBatteryStats(bool format_battery_stats);
+
+    // Sets whether the device is currently formatting the sd-ext partition.
+    virtual void SetFormatSdext(bool format_sdext);
+
+    // Sets whether the device is currently formatting the dalvik cache.
+    virtual void SetFormatDalvikCache(bool format_dalvik_cache);
+
+    // Sets whether the device is currently formatting the battery stats.
+    virtual void SetFormatBatteryStats(bool format_battery_stats);
+
+    // Sets whether the device is currently formatting the sd-ext partition.
+    virtual void SetFormatSdext(bool format_sdext);
+
+    // Sets whether the device is currently formatting the dalvik cache.
+    virtual void SetFormatDalvikCache(bool format_dalvik_cache);
+
+    // Sets whether the device is currently formatting the battery stats.
+    virtual void SetFormatBatteryStats(bool format_battery_stats);
+
+    // Sets whether the device is currently formatting the sd-ext partition.
+    virtual void SetFormatSdext(bool format_sdext);
+
+    // Sets whether the device is currently formatting the dalvik cache.
+    virtual void SetFormatDalvikCache(bool format_dalvik_cache);
+
+    // Sets whether the device is currently formatting the battery stats.
+    virtual void SetFormatBatteryStats(bool format_battery_stats);
+
+    // Sets whether the device is currently formatting the sd-ext partition
+
+    // Sets whether the device is currently formatting the battery stats.
+    virtual void SetFormatBatteryStats(bool format_battery_stats);
+
+
 
   ScreenRecoveryUI();
 
@@ -94,15 +207,14 @@ class ScreenRecoveryUI : public RecoveryUI {
   const int kAnimationFps;
 
   // The scale factor from dp to pixels. 1.0 for mdpi, 4.0 for xxxhdpi.
-  const float kDensity;
+  const float kScale;
 
-  virtual bool InitTextParams();
+  // The width of the progress bar.
+  const int kProgressBarWidth;
 
-  virtual void draw_background_locked();
-  virtual void draw_foreground_locked();
-  virtual void draw_screen_locked();
-  virtual void update_screen_locked();
-  virtual void update_progress_locked();
+  // The height of the progress bar.
+  const int kProgressBarHeight;
+
 
   GRSurface* GetCurrentFrame() const;
   GRSurface* GetCurrentText() const;
@@ -195,17 +307,15 @@ class ScreenRecoveryUI : public RecoveryUI {
   pthread_t progress_thread_;
 
   // Number of intro frames and loop frames in the animation.
-  size_t intro_frames;
-  size_t loop_frames;
+  int introFrameCount, loopFrameCount;
 
-  size_t current_frame;
-  bool intro_done;
+  // The current frame of the animation.
+  int currentFrame;
 
-  int stage, max_stage;
+  // The current locale.
+  std::string locale_;
 
-  int char_width_;
-  int char_height_;
-
+  
   // The locale that's used to show the rendered texts.
   std::string locale_;
   bool rtl_locale_;
@@ -221,3 +331,4 @@ class ScreenRecoveryUI : public RecoveryUI {
 };
 
 #endif  // RECOVERY_UI_H
+
